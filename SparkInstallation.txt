@@ -1,0 +1,93 @@
+Spark Installation Steps - Windows
+----------------------------------
+
+1. Create a new folder as "spark" in C drive.
+2. Download spark from the link - https://www.apache.org/dyn/closer.lua/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz
+3. Extract and copy paste in the spark folder.
+4.  As a pre-requireties download Java from the link below and install.
+https://www.java.com/en/download/manual.jsp "Windows Online"
+5. Then go to settings, search for environmental variables. Select "edit the system environment variables"
+6. click environmental variables -> new -> 
+variable name : SPARK_HOME
+variable value : <browse the extracted spark file from c drive> eg: C:\spark\spark-3.5.1-bin-hadoop3
+then click ok
+7. Then edit the already existing path variable and add the same file path. 
+8. Once done, open anaconda prompt and run below (one by one)
+
+pip install pyspark
+pip insall findspark 
+
+9. Try the RDD Code sample in Jupyter: 
+
+import findspark
+findspark.init()
+import pyspark
+
+from pyspark.sql import SparkSession
+from pyspark.context import SparkContext
+
+spark = SparkSession.builder.getOrCreate()
+file = spark.sparkContext.textFile("Desktop/proj/datascience.txt")
+
+# Print content of rdd
+file.take(1)
+
+10, Try the DF Code sample in Jupyter:
+
+import findspark
+findspark.init()
+import pyspark
+
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.getOrCreate()
+
+mydata = spark.read.option("header","true").option("inferSchema","true").format("csv").load("Desktop/myfiles/EcommerceCustomers.csv")
+mydata.printSchema()
+
+load data inpath "/user/cloudera/pga14/txns1.txt" into table txnrecords;
+
+
+
+
+
+
+
+hivecontext:
+val sqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
+
+sqlContext.sql("CREATE TABLE cust_spark(custno string, firstname string, lastname string, age int,profession string) row format delimited fields terminated by ','")
+
+sqlContext.sql("LOAD DATA INPATH '/user/cloudera/custs' into TABLE cust_spark")
+
+
+val result1 = sqlContext.sql("select * from cust_spark where age > 50 limit 10")
+
+result1.collect.foreach(println)
+
+
+
+
+
+
+
+
+
+
+qlcontext:
+val sqlcontext1 = new org.apache.spark.sql.SQLContext(sc)
+
+val result1 = sqlcontext1.sql("select * from cust_spark limit 20")
+
+result1.select("firstname").show()
+
+result1.printSchema()
+
+result1.filter(result1("age") > 50).show()
+
+result1.groupBy("age").count().show()
+
+result1.select($"firstname", $"age" + 2).show()
+
+result1.select("firstname", "age").show()
+
+result1.filter($"age" > 30).show()
